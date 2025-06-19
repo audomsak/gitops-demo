@@ -1,0 +1,26 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: team-a-app1-frontend
+
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: team-a-app1-backend
+
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: team-a-app2-service
+
+---
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: team-a-app2-data

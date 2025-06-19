@@ -1,8 +1,8 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: team-a-app1-frontend
-  namespace: demo
+  name: frontend
+  namespace: team-a-app1-frontend
 spec:
   replicas: 1
   selector:

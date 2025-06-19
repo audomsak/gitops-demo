@@ -2,7 +2,7 @@ kind: Deployment
 apiVersion: apps/v1
 metadata:
   name: service-a
-  namespace: demo
+  namespace: team-a-app2-service
 spec:
   replicas: 1
   selector:

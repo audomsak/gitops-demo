@@ -1,0 +1,185 @@
+apiVersion: v1
+items:
+- apiVersion: argoproj.io/v1alpha1
+  kind: AppProject
+  metadata:
+    name: default
+    namespace: openshift-gitops
+  spec:
+    clusterResourceBlacklist:
+    - group: '*'
+      kind: '*'
+    namespaceResourceBlacklist:
+    - group: '*'
+      kind: '*'
+
+- apiVersion: argoproj.io/v1alpha1
+  kind: AppProject
+  metadata:
+    name: infra
+    namespace: openshift-gitops
+  spec:
+    clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+    namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+    roles:
+    - groups:
+      - cluster-admins
+      name: cluster-admin
+      policies:
+      - p, proj:infra:cluster-admin, applications, *, infra/*, allow
+      - p, proj:infra:cluster-admin, applicationsets, *, infra/*, allow
+      - p, proj:infra:cluster-admin, clusters, *, infra/*, allow
+      - p, proj:infra:cluster-admin, logs, *, infra/*, allow
+      - p, proj:infra:cluster-admin, exec, *, infra/*, allow
+      - p, proj:infra:cluster-admin, repositories, *, infra/*, allow
+    sourceRepos:
+    - '*'
+
+- apiVersion: argoproj.io/v1alpha1
+  kind: AppProject
+  metadata:
+    name: team-a-app1
+    namespace: openshift-gitops
+  spec:
+    sourceRepos:
+    - 'https://github.com/audomsak/gitops-demo'
+    clusterResourceBlacklist:
+    - group: '*'
+      kind: '*'
+    destinations:
+    - name: in-cluster
+      namespace: team-a-app1-frontend
+      server: https://kubernetes.default.svc
+    - name: in-cluster
+      namespace: team-a-app1-backend
+      server: https://kubernetes.default.svc
+    namespaceResourceBlacklist:
+    - group: '*'
+      kind: NetworkPolicy
+    - group: '*'
+      kind: ResourceQuota
+    - group: '*'
+      kind: LimitRange
+    namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+    roles:
+    - groups:
+      - team-a-admin
+      name: admin
+      policies:
+      - p, proj:team-a-app1:admin, applications, *, team-a-app1/*, allow
+      - p, proj:team-a-app1:admin, clusters, get, team-a-app1/*, allow
+      - p, proj:team-a-app1:admin, repositories, get, team-a-app1/*, allow
+      - p, proj:team-a-app1:admin, logs, get, team-a-app1/*, allow
+      - p, proj:team-a-app1:admin, exec, create, team-a-app1/*, allow
+    - groups:
+      - team-a
+      name: user
+      policies:
+      - p, proj:team-a-app1:user, applications, get, team-a-app1/*, allow
+      - p, proj:team-a-app1:user, repositories, get, team-a-app1/*, allow
+      - p, proj:team-a-app1:user, logs, get, team-a-app1/*, allow
+      - p, proj:team-a-app1:user, clusters, get, team-a-app1/*, allow
+
+- apiVersion: argoproj.io/v1alpha1
+  kind: AppProject
+  metadata:
+    name: team-a-app2
+    namespace: openshift-gitops
+  spec:
+    sourceRepos:
+    - 'https://github.com/audomsak/gitops-demo'
+    clusterResourceBlacklist:
+    - group: '*'
+      kind: '*'
+    destinations:
+    - name: in-cluster
+      namespace: team-a-app2-service
+      server: https://kubernetes.default.svc
+    - name: in-cluster
+      namespace: team-a-app2-data
+      server: https://kubernetes.default.svc
+    namespaceResourceBlacklist:
+    - group: '*'
+      kind: NetworkPolicy
+    - group: '*'
+      kind: ResourceQuota
+    - group: '*'
+      kind: LimitRange
+    namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+    roles:
+    - groups:
+      - team-a-admin
+      name: admin
+      policies:
+      - p, proj:team-a-app2:admin, applications, *, team-a-app2/*, allow
+      - p, proj:team-a-app2:admin, clusters, get, team-a-app2/*, allow
+      - p, proj:team-a-app2:admin, repositories, get, team-a-app2/*, allow
+      - p, proj:team-a-app2:admin, logs, get, team-a-app2/*, allow
+      - p, proj:team-a-app2:admin, exec, create, team-a-app2/*, allow
+    - groups:
+      - team-a
+      name: user
+      policies:
+      - p, proj:team-a-app1:user, applications, get, team-a-app1/*, allow
+      - p, proj:team-a-app1:user, repositories, get, team-a-app1/*, allow
+      - p, proj:team-a-app1:user, logs, get, team-a-app1/*, allow
+      - p, proj:team-a-app1:user, clusters, get, team-a-app1/*, allow
+
+- apiVersion: argoproj.io/v1alpha1
+  kind: AppProject
+  metadata:
+    name: team-b-app1
+    namespace: openshift-gitops
+  spec:
+    sourceRepos:
+    - 'https://github.com/audomsak/gitops-demo'
+    clusterResourceBlacklist:
+    - group: '*'
+      kind: '*'
+    destinations:
+    - name: in-cluster
+      namespace: team-b-app1-api
+      server: https://kubernetes.default.svc
+    - name: in-cluster
+      namespace: team-b-app1-integration
+      server: https://kubernetes.default.svc
+    namespaceResourceBlacklist:
+    - group: '*'
+      kind: NetworkPolicy
+    - group: '*'
+      kind: ResourceQuota
+    - group: '*'
+      kind: LimitRange
+    namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'
+    roles:
+    - groups:
+      - team-b-admin
+      name: admin
+      policies:
+      - p, proj:team-b-app1:admin, applications, *, team-b-app1/*, allow
+      - p, proj:team-b-app1:admin, clusters, get, team-b-app1/*, allow
+      - p, proj:team-b-app1:admin, repositories, get, team-b-app1/*, allow
+      - p, proj:team-b-app1:admin, logs, get, team-b-app1/*, allow
+      - p, proj:team-b-app1:admin, exec, create, team-b-app1/*, allow
+    - groups:
+      - team-b
+      name: user
+      policies:
+      - p, proj:team-b-app1:user, applications, get, team-b-app1/*, allow
+      - p, proj:team-b-app1:user, repositories, get, team-b-app1/*, allow
+      - p, proj:team-b-app1:user, logs, get, team-b-app1/*, allow
+      - p, proj:team-b-app1:user, clusters, get, team-b-app1/*, allow
+
+kind: List
+metadata:
+  resourceVersion: ""

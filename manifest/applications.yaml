@@ -1,0 +1,40 @@
+apiVersion: v1
+items:
+- apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  metadata:
+    name: app1
+    namespace: openshift-gitops
+  spec:
+    destination:
+      name: in-cluster
+      namespace: team-a-app1-frontend
+    project: team-a-app1
+    source:
+      path: app/team-a/app1
+      repoURL: https://github.com/audomsak/gitops-demo
+      targetRevision: HEAD
+    syncPolicy:
+      syncOptions:
+      - PrunePropagationPolicy=foreground
+
+- apiVersion: argoproj.io/v1alpha1
+  kind: Application
+  metadata:
+    name: infra
+    namespace: openshift-gitops
+  spec:
+    destination:
+      server: https://kubernetes.default.svc
+    project: infra
+    source:
+      directory:
+        jsonnet: {}
+        recurse: true
+      path: infra
+      repoURL: https://github.com/audomsak/gitops-demo
+      targetRevision: HEAD
+
+kind: List
+metadata:
+  resourceVersion: ""
